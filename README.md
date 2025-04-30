@@ -34,7 +34,7 @@ Follow these steps to run the project on your Arduino:
 
 2. Open the Code
 - Launch Arduino IDE.
-- Open the `.ino` file from the downloaded folder.( yaha pe code dalna ya uski link)
+- Source code : https://github.com/GaydhaneAsh/Advanced-IoT-Based-Air-Quality-Monitoring-and-Alert-System/blob/main/CODE 
 
 3.Select Board and Port
 Tools > Board > Arduino Uno
