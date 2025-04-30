@@ -63,6 +63,7 @@ Help:
 - Make sure the HC-05 module is powered (VCC = 5V).
 - Disconnect Bluetooth TX/RX before uploading code.
 - Pair the device using PIN `1234` or `0000`.
+
 Authors:
 1)	Ashlesha Gaydhane
 2)	Mrunal Tambat
