@@ -1,0 +1,107 @@
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+#include <SoftwareSerial.h>
+
+#define AO_PIN       A0    // MQ135 analog output
+#define LED_PIN      9     // LED alert
+#define BUZZER_PIN   8     // Buzzer alert
+#define BUTTON_PIN   6     // Silence button
+
+LiquidCrystal_I2C lcd(0x27, 16, 2);  // I2C LCD address and size
+SoftwareSerial BTSerial(2, 3); // RX, TX
+
+bool buzzerSilenced = false;
+int prevAQI = -1;
+
+// Calibration: map raw [285..600] to AQI [0..300]
+const int rawMin = 285;
+const int rawMax = 600;
+
+void setup() {
+  Serial.begin(9600);
+  BTSerial.begin(9600);
+  lcd.init();
+  lcd.backlight();
+
+  pinMode(LED_PIN, OUTPUT);
+  pinMode(BUZZER_PIN, OUTPUT);
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+
+  delay(20000);  // Sensor warm-up time
+
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Air Monitor Init");
+  lcd.setCursor(0, 1);
+  lcd.print("Ready...");
+  BTSerial.println("Bluetooth AQI Monitor Ready.");
+}
+
+int getAverageReading(int samples = 20) {
+  long sum = 0;
+  for (int i = 0; i < samples; i++) {
+    sum += analogRead(AO_PIN);
+    delay(5);
+  }
+  return sum / samples;
+}
+
+void loop() {
+  int raw = getAverageReading();
+  int aqi = map(raw, rawMin, rawMax, 0, 300);
+  aqi = constrain(aqi, 0, 300);
+  bool buttonPressed = (digitalRead(BUTTON_PIN) == LOW);
+
+  if (abs(aqi - prevAQI) > 2) {
+    const char* status;
+
+    if (aqi <= 50) {
+      status = "Good";
+    } else if (aqi <= 100) {
+      status = "Moderate";
+    } else if (aqi <= 150) {
+      status = "Poor";
+    } else if (aqi <= 200) {
+      status = "Unhealthy";
+    } else {
+      status = "Severe";
+    }
+
+    // Send AQI data over Bluetooth
+    BTSerial.print("AQI: ");
+    BTSerial.print(aqi);
+    BTSerial.print(" (");
+    BTSerial.print(status);
+    BTSerial.println(")");
+
+    // Send clear warning if AQI is bad
+    if (aqi > 150) {
+      digitalWrite(LED_PIN, HIGH);
+      if (buttonPressed) buzzerSilenced = true;
+      digitalWrite(BUZZER_PIN, buzzerSilenced ? LOW : HIGH);
+
+      BTSerial.println("⚠ ALERT: Air quality is UNSAFE!");
+      BTSerial.print("🔴 Current AQI: ");
+      BTSerial.print(aqi);
+      BTSerial.print(" - ");
+      BTSerial.println(status);
+      BTSerial.println("Please take precautions! 🚨");
+    } else {
+      digitalWrite(LED_PIN, LOW);
+      digitalWrite(BUZZER_PIN, LOW);
+      buzzerSilenced = false;
+    }
+
+    // Update LCD
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("AQI: ");
+    lcd.print(aqi);
+    lcd.setCursor(0, 1);
+    lcd.print(status);
+
+    prevAQI = aqi;
+  }
+
+  delay(1000);
+}
