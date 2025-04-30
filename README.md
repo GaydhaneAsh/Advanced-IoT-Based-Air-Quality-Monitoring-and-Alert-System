@@ -60,8 +60,8 @@ Help:
 - Make sure the MQ135 has been preheated for at least 24–48 hours.
 - Ensure you’ve calibrated the sensor properly (set a correct Ro value).
 - Keep the sensor in clean air during calibration.
-- Make sure the **HC-05 module is powered** (VCC = 5V).
-- Disconnect **Bluetooth TX/RX** before uploading code.
+- Make sure the HC-05 module is powered (VCC = 5V).
+- Disconnect Bluetooth TX/RX before uploading code.
 - Pair the device using PIN `1234` or `0000`.
 Authors:
 1)	Ashlesha Gaydhane
