@@ -3,6 +3,9 @@ An Arduino UNO-based system using the MQ135 sensor to detect harmful gases. Aler
 “MQ135-Based Air Quality Monitoring and Alert System”
 A simple Arduino project to monitor air pollution levels using the MQ135 gas sensor. The system displays real-time air quality (in PPM) on an LCD and triggers visual and audio alerts when pollution exceeds safe limits. Ideal for home or classroom or office environments to raise awareness about indoor air quality.
 
+Project Overview:
+This project aims to create an IoT-based air quality monitoring system using an Arduino UNO and the MQ135 gas sensor. The system provides real-time monitoring of air quality by detecting harmful gases like ammonia, nitrogen oxides, benzene, CO₂, and smoke. It also triggers alerts through a combination of visual (LED) and audio (buzzer) signals whenever air quality falls below a certain threshold. The system transmits the air quality data via Bluetooth to a mobile app, allowing users to monitor air pollution remotely and make informed decisions about their environment. The project is designed for use in homes, schools, and offices, making it an ideal solution for raising awareness about the importance of indoor air quality.
+
 Description:
 This project is an Arduino-based air quality monitoring system using the MQ135 gas sensor. It continuously measures the concentration of gases like ammonia (NH₃), nitrogen oxides (NOx), benzene, CO₂, and smoke in the surrounding air. The analog output from the MQ135 is read by the Arduino and converted into PPM (parts per million) values. These values are displayed on a 16x2 LCD, and an LED & buzzer alert is triggered if the air quality crosses a predefined threshold.
 The system is useful for:
